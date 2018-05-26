@@ -1,0 +1,5 @@
+#+TITLE: Incr_dom_vg
+
+Support for creating a widget that works with the [[https://github.com/janestreet/incr_dom][Incr_dom]] web-UI
+framework that lets you create a canvas widget whose contents are
+defined via the [[https://github.com/dbuenzli/vg][Vg]] vector graphics library.
