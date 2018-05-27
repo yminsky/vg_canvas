@@ -19,17 +19,27 @@ let vg_canvas_id =
 type arg = Gg.V2.t * Gg.Box2.t * Vg.I.t
 [@@deriving compare]
 
-let create ~size ~bbox image =
+let create ~size ~bbox attrs image =
   let arg = (size,bbox,image) in
-  Node.widget ()
-    ~id:vg_canvas_id
-    ~init:(fun () ->
-        let canvas = Dom_html.createCanvas (Dom_html.window ##. document) in
+  let init () =
+    let canvas : Dom_html.canvasElement Js.t =
+      Node.create "canvas" attrs []
+      |> Node.to_dom
+      |> Js.Unsafe.coerce
+    in
+    render canvas size bbox image;
+    ((attrs,arg), canvas)
+  in
+  let update (old_attrs, old_arg) canvas =
+    (* CR yminsky: This is not ideal behavior. It would be better
+       to leave the canvas in place, and re-set the attributes *)
+    (* If the attributes change, rerender the entire node *)
+    if not (List.equal ~equal:phys_equal old_attrs attrs) then
+      init ()
+    else (
+      (* If a change in the thing to render, we rerender *)
+      if not ([%compare.equal: arg] old_arg arg) then
         render canvas size bbox image;
-        (arg, canvas))
-    ~update:(fun old_data canvas ->
-        (* If there's any change in the input, we rerender the entire
-           canvas *)
-        if not ([%compare.equal: arg] old_data arg) then
-          render canvas size bbox image;
-        (arg, canvas))
+      ((attrs,arg), canvas))
+  in
+  Node.widget ~id:vg_canvas_id ~init ~update ()
