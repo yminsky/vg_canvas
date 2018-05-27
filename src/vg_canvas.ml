@@ -19,17 +19,17 @@ let vg_canvas_id =
 type arg = Gg.V2.t * Gg.Box2.t * Vg.I.t
 [@@deriving compare]
 
-let create size view image =
-  let arg = (size,view,image) in
+let create ~size ~bbox image =
+  let arg = (size,bbox,image) in
   Node.widget ()
     ~id:vg_canvas_id
     ~init:(fun () ->
         let canvas = Dom_html.createCanvas (Dom_html.window ##. document) in
-        render canvas size view image;
+        render canvas size bbox image;
         (arg, canvas))
     ~update:(fun old_data canvas ->
         (* If there's any change in the input, we rerender the entire
            canvas *)
         if not ([%compare.equal: arg] old_data arg) then
-          render canvas size view image;
+          render canvas size bbox image;
         (arg, canvas))

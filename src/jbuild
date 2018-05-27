@@ -2,7 +2,7 @@
  ((name vg_canvas)
   ;;(public_name vg_canvas)
   (synopsis "Virtual_dom widget for rendering to the Canvas from Vg")
-  (libraries (base virtual_dom vg))
+  (libraries (base virtual_dom vg vg.htmlc))
   (preprocess (pps (ppx_jane js_of_ocaml-ppx)))
   (inline_tests)
   (flags (:standard -short-paths))))
