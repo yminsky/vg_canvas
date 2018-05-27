@@ -1,0 +1,8 @@
+(library
+ ((name incr_dom_vg)
+  (public_name incr_dom_vg)
+  (synopsis "Incr_dom compatible widget for rendering to the Canvas from Vg")
+  (libraries (base incr_dom vg))
+  (preprocess (pps (ppx_jane)))
+  (inline_tests)
+  (flags (:standard -short-paths))))
