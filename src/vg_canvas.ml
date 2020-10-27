@@ -1,5 +1,6 @@
 open! Base
 open! Virtual_dom.Vdom
+open Js_of_ocaml
 
 let render canvas size view image =
   let renderer = Vg.Vgr.create (Vgr_htmlc.target canvas) `Other  in
@@ -34,7 +35,7 @@ let create ~size ~bbox attrs image =
     (* CR yminsky: This is not ideal behavior. It would be better
        to leave the canvas in place, and re-set the attributes *)
     (* If the attributes change, rerender the entire node *)
-    if not (List.equal ~equal:phys_equal old_attrs attrs) then
+    if not (List.equal phys_equal old_attrs attrs) then
       init ()
     else (
       (* If a change in the thing to render, we rerender *)
