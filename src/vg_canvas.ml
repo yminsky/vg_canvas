@@ -1,6 +1,5 @@
 open! Base
 open! Virtual_dom.Vdom
-open Js_of_ocaml
 
 let render canvas size view image =
   let renderer = Vg.Vgr.create (Vgr_htmlc.target canvas) `Other  in
@@ -23,10 +22,10 @@ type arg = Gg.V2.t * Gg.Box2.t * Vg.I.t
 let create ~size ~bbox attrs image =
   let arg = (size,bbox,image) in
   let init () =
-    let canvas : Dom_html.canvasElement Js.t =
+    let canvas : Js_of_ocaml.Dom_html.canvasElement Js_of_ocaml.Js.t =
       Node.create "canvas" attrs []
       |> Node.to_dom
-      |> Js.Unsafe.coerce
+      |> Js_of_ocaml.Js.Unsafe.coerce
     in
     render canvas size bbox image;
     ((attrs,arg), canvas)

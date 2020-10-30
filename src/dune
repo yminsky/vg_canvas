@@ -1,6 +1,6 @@
 (library
  (name vg_canvas)
- ;;(public_name vg_canvas)
+ (public_name vg_canvas)
  (synopsis "Virtual_dom widget for rendering to the Canvas from Vg")
  (libraries base virtual_dom vg vg.htmlc)
  (preprocess

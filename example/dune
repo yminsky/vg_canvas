@@ -3,5 +3,5 @@
  (modes js)
  (libraries incr_dom vg_canvas core_kernel)
  (preprocess (pps js_of_ocaml-ppx ppx_jane))
- (flags :standard -short-paths)
+ (flags :standard)
 )
