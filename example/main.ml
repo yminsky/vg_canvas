@@ -1,4 +1,5 @@
 open! Base
+open Async_kernel
 open! Incr_dom
 module Time_ns = Core_kernel.Time_ns
 
@@ -10,26 +11,19 @@ module App = struct
   end
 
   module Action = struct
-    type t = unit [@@deriving sexp]
-    let should_log _ = true
+    type t = Nothing.t [@@deriving sexp]
   end
 
   module State = struct
     type t = unit
   end
 
-  let apply_action _ m _ = m
-  let update_visibility m = m
+  let on_startup ~schedule_action:_ _model = Deferred.unit
 
-  let on_startup ~schedule:_ _ =
-    Async_kernel.return ()
-
-  let on_display ~old:_ _ _ = ()
-
-  let view _m ~inject:_ =
+  let view =
     let open Vdom in
     let open Incr.Let_syntax in
-    let%map now = Incr.watch_now () in
+    let%map now = Incr.Clock.watch_now Incr.clock in
     let canvas =
       let open Gg in
       let open Vg in
@@ -52,9 +46,16 @@ module App = struct
       [ Node.h1 [] [ Node.text "This is a page with a canvas"]
       ; canvas
       ]
+
+  let create model ~old_model:_ ~inject:_ =
+    let open Incr.Let_syntax in
+    let%map model = model and view = view in
+    let apply_action action _ ~schedule_action:_ = Nothing.unreachable_code action in
+    Component.create ~apply_action model view
 end
 
 let () =
-  Start_app.simple
+  Start_app.start
     (module App)
+    ~bind_to_element_with_id:"app"
     ~initial_model:App.Model.empty

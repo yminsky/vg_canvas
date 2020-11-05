@@ -22,10 +22,10 @@ type arg = Gg.V2.t * Gg.Box2.t * Vg.I.t
 let create ~size ~bbox attrs image =
   let arg = (size,bbox,image) in
   let init () =
-    let canvas : Dom_html.canvasElement Js.t =
+    let canvas : Js_of_ocaml.Dom_html.canvasElement Js_of_ocaml.Js.t =
       Node.create "canvas" attrs []
       |> Node.to_dom
-      |> Js.Unsafe.coerce
+      |> Js_of_ocaml.Js.Unsafe.coerce
     in
     render canvas size bbox image;
     ((attrs,arg), canvas)
@@ -34,7 +34,7 @@ let create ~size ~bbox attrs image =
     (* CR yminsky: This is not ideal behavior. It would be better
        to leave the canvas in place, and re-set the attributes *)
     (* If the attributes change, rerender the entire node *)
-    if not (List.equal ~equal:phys_equal old_attrs attrs) then
+    if not (List.equal phys_equal old_attrs attrs) then
       init ()
     else (
       (* If a change in the thing to render, we rerender *)
